@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: auction-app
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: auction-app
+
+  template:
+    metadata:
+      labels:
+        app: auction-app
+
+    spec:
+      containers:
+        - name: auction-app
+          image: bennieo/cloud-native-auction-app:latest
+
+          envFrom:
+            - configMapRef:
+                name: auction-config
+
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_USER
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_PASSWORD
+
+          ports:
+            - containerPort: 5000

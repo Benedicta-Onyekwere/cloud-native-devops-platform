@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: auction-config
+
+data:
+  DB_HOST: postgres
+  DB_NAME: auctiondb
+  APP_ENV: production
