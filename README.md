@@ -34,3 +34,4 @@ Coming soon...
 
 Coming soon...# CI/CD pipeline verification
 # AWS OIDC test
+# CI/CD deployment verification
