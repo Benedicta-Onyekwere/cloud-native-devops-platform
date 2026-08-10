@@ -36,3 +36,4 @@ Coming soon...# CI/CD pipeline verification
 # AWS OIDC test
 # CI/CD deployment verification
 # EKS deployment verification
+# EKS cluster access verification
