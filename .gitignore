@@ -1,0 +1,16 @@
+# Terraform
+**/.terraform/
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/*.tfstate
+**/*.tfstate.*
+
+# Local Terraform backups
+**/*.tfstate.backup
+
+# Old infrastructure backups
+infrastructure/terraform-azure-old-backup/
+infrastructure/terraform-azure-terraform-backup/infrastructure/terraform/old-generated/
+
+infrastructure/terraform-azure-terraform-backup/
+infrastructure/terraform/old-generated/

@@ -1,9 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: auction-app
-
 spec:
   replicas: 2
 
@@ -27,16 +25,13 @@ spec:
 
           env:
             - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: DB_USER
+              value: auctionuser
 
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-credentials
-                  key: DB_PASSWORD
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
 
           ports:
             - containerPort: 5000

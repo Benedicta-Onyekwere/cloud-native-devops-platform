@@ -1,31 +1,26 @@
 apiVersion: apps/v1
 kind: StatefulSet
-
 metadata:
   name: postgres
-
 spec:
   serviceName: postgres
   replicas: 1
-
   selector:
     matchLabels:
       app: postgres
-
   template:
     metadata:
       labels:
         app: postgres
-
     spec:
       containers:
         - name: postgres
           image: postgres:16
-
           ports:
             - containerPort: 5432
-
           env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
             - name: POSTGRES_DB
               value: auctiondb
             - name: POSTGRES_USER
@@ -35,11 +30,9 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
-
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
-
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:

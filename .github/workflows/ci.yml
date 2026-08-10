@@ -1,17 +1,19 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
 
-jobs:
-  build:
+permissions:
+  id-token: write
+  contents: read
 
+jobs:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -22,7 +24,47 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/cloud-native-auction-app:latest ./app
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKER_USERNAME }}/cloud-native-auction-app:latest \
+            ./app
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/cloud-native-auction-app:latest
+        run: |
+          docker push \
+            ${{ secrets.DOCKER_USERNAME }}/cloud-native-auction-app:latest
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Configure kubectl
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ secrets.AWS_REGION }} \
+            --name cloud-native-devops-eks
+
+      - name: Verify EKS access
+        run: |
+          kubectl get nodes
+          kubectl get pods
+
+      - name: Deploy ConfigMap
+        run: |
+          kubectl apply -f kubernetes/configmap.yaml
+
+      - name: Deploy application
+        run: |
+          kubectl apply -f kubernetes/deployment.yaml
+          kubectl apply -f kubernetes/service.yaml
+
+      - name: Wait for application rollout
+        run: |
+          kubectl rollout status deployment/auction-app --timeout=180s
+
+      - name: Verify deployment
+        run: |
+          kubectl get pods
+          kubectl get svc auction-service
