@@ -33,3 +33,4 @@ Coming soon...
 ## Monitoring
 
 Coming soon...# CI/CD pipeline verification
+# AWS OIDC test
